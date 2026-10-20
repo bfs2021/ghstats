@@ -13,6 +13,6 @@ from ghstats.fetcher import (
 try:
     __version__ = _metadata_version("ghstats-py")
 except PackageNotFoundError:  # running from a source checkout, not an install
-    __version__ = "0.0.0.dev0"
+    __version__ = "0.2.0"
 
 __all__ = ["ContributionCalendar", "IssueStats", "PullRequestStats", "StatsFetcher", "UserStats"]

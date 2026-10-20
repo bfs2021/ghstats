@@ -162,11 +162,11 @@ def test_every_declared_dependency_is_imported() -> None:
 
 
 def _package_not_found_fallback_lines(tree: ast.AST) -> set[int]:
-    """Line numbers of __version__ literals guarded by except PackageNotFoundError.
+    """Line numbers of __version__ assignments guarded by PackageNotFoundError.
 
-    A bare ``__version__ = "0.0.0.dev0"`` is only legitimate inside that
-    handler, where it marks "running from a source checkout, not an install".
-    The same literal at module level is the stale-version bug.
+    A literal __version__ assignment is allowed inside that handler,
+    where it provides a fallback when package metadata is unavailable.
+    A literal assignment at module level is the stale-version bug.
     """
     guarded: set[int] = set()
     for node in ast.walk(tree):
@@ -298,8 +298,8 @@ def test_version_falls_back_when_the_package_is_not_installed(
     monkeypatch.delitem(sys.modules, MODULE_NAME, raising=False)
     reloaded = importlib.import_module(MODULE_NAME)
     try:
-        assert reloaded.__version__ == "0.0.0.dev0", (
-            "expected the documented 0.0.0.dev0 fallback, got "
+        assert reloaded.__version__ == "0.2.0", (
+            "expected the documented 0.2.0 fallback, got "
             f"{reloaded.__version__!r}"
         )
     finally:
