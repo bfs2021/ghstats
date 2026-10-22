@@ -95,7 +95,9 @@ class StatsFetcher:
         try:
             # Return codes are inspected explicitly below to map gh's stderr onto
             # GHRuntimeError, so check=False preserves that handling.
-            result = subprocess.run(cmd, capture_output=True, text=True, timeout=30, check=False)
+            result = subprocess.run(
+                cmd, capture_output=True, text=True, errors="replace", timeout=30, check=False
+            )
             if result.returncode != 0:
                 stderr = result.stderr.strip()
                 if "authentication" in stderr.lower() or "401" in stderr:

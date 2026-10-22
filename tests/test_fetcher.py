@@ -55,6 +55,15 @@ class TestStatsFetcher:
         assert f.username == ""
 
     @patch("ghstats.fetcher.subprocess.run")
+    def test_run_gh_replaces_undecodable_output(self, mock_run, fetcher):
+        mock_run.return_value = MagicMock(
+            returncode=0, stdout='{"login": "ok"}', stderr=""
+        )
+
+        assert fetcher._run_gh(["user"]) == {"login": "ok"}
+        assert mock_run.call_args.kwargs["errors"] == "replace"
+
+    @patch("ghstats.fetcher.subprocess.run")
     def test_fetch_user_stats(self, mock_run, fetcher):
         mock_run.return_value = MagicMock(
             returncode=0,
